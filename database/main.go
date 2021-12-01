@@ -6,6 +6,8 @@ import (
  "github.com/gorilla/mux"
  "log"
  "net/http"
+ "html/template"
+ 
 )
 
 const (
@@ -35,13 +37,11 @@ func ServePage(w http.ResponseWriter, r *http.Request) {
  log.Println("Couldn't get page: +pageID")
  http.Error(w, http.StatusText(404), http.StatusNotFound)
  log.Println(err.Error)
- }else{
- html := `<html><head><title>` + thisPage.Title +
-`</title></head><body><h1>` + thisPage.Title + `</h1><div>` +
-thisPage.Content + `</div></body></html>`
- 
- fmt.Fprintln(w, html)
+ return
  }
+ t, _ := template.ParseFiles("templates/blog.html")
+ t.Execute(w, thisPage)
+ 
 }
 
 func main() {
